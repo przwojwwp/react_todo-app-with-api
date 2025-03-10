@@ -17,15 +17,26 @@ export const TodoItem = ({
   inputRef,
   onToggleTodoStatus,
 }: Props) => {
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleDelete = async () => {
-    setIsDeleting(true);
+    setIsUpdating(true);
 
     try {
       await onDeleteTodo(id);
     } finally {
-      setIsDeleting(false);
+      setIsUpdating(false);
+      inputRef.current?.focus();
+    }
+  };
+
+  const handleToggleStatus = async () => {
+    setIsUpdating(true);
+
+    try {
+      await onToggleTodoStatus(id);
+    } finally {
+      setIsUpdating(false);
       inputRef.current?.focus();
     }
   };
@@ -41,7 +52,7 @@ export const TodoItem = ({
               type="checkbox"
               className="todo__status"
               checked={completed}
-              onClick={() => onToggleTodoStatus(id)}
+              onClick={handleToggleStatus}
             />
           )}
         </label>
@@ -63,7 +74,7 @@ export const TodoItem = ({
         {/* overlay will cover the todo while it is being deleted or updated */}
         <div
           data-cy="TodoLoader"
-          className={`modal overlay ${(temporaryTodo || isDeleting) && 'is-active'}`}
+          className={`modal overlay ${(temporaryTodo || isUpdating) && 'is-active'}`}
         >
           <div className="modal-background has-background-white-ter" />
           <div className="loader" />

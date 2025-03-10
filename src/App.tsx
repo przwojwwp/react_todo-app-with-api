@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
-import { deleteTodo, getTodos, USER_ID } from './api/todos';
+import { deleteTodo, getTodos, patchTodo, USER_ID } from './api/todos';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
@@ -116,12 +116,29 @@ export const App: React.FC = () => {
     }
   });
 
-  const handleToggleTodoStatus = (id: number) => {
-    setTodos(prevState =>
-      prevState.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
-    );
+  const handleToggleTodoStatus = async (id: number) => {
+    const todoToUpdate = todos.find(todo => todo.id === id);
+
+    if (!todoToUpdate) {
+      return;
+    }
+
+    const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
+
+    try {
+      await patchTodo(id, { completed: updatedTodo.completed });
+      setTodos(prevState =>
+        prevState.map(todo =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+        ),
+      );
+    } catch {
+      setErrorMessage(ErrorMessage.UPDATE_TODO);
+    } finally {
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+    }
   };
 
   return (
