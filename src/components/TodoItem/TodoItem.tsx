@@ -18,6 +18,7 @@ export const TodoItem = ({
   onToggleTodoStatus,
 }: Props) => {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleDelete = async () => {
     setIsUpdating(true);
@@ -41,45 +42,86 @@ export const TodoItem = ({
     }
   };
 
+  const handleEscapeUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    event?.preventDefault();
+  };
+
   return (
-    <>
-      {/* This is a completed todo */}
-      <div data-cy="Todo" className={`todo ${completed ? 'completed' : ''}`}>
-        <label className="todo__status-label">
-          {id && (
+    <div data-cy="Todo" className={`todo ${completed ? 'completed' : ''}`}>
+      {isEditing ? (
+        <>
+          <label className="todo__status-label" htmlFor={`todo=${id}`}>
             <input
+              // ref={checkboxRef}
               data-cy="TodoStatus"
               type="checkbox"
               className="todo__status"
               checked={completed}
               onChange={handleToggleStatus}
             />
-          )}
-        </label>
+          </label>
 
-        <span data-cy="TodoTitle" className="todo__title">
-          {title}
-        </span>
+          <form onSubmit={handleSubmit}>
+            <input
+              data-cy="TodoTitleField"
+              // ref={renameInputRef}
+              type="text"
+              className="todo__title-field"
+              placeholder="Empty todo will be deleted"
+              // value={editingTitle}
+              // onChange={e => setEditingTitle(e.target.value)}
+              // onBlur={handleOnBlur}
+              onKeyUp={handleEscapeUp}
+            />
+          </form>
+        </>
+      ) : (
+        <>
+          <label className="todo__status-label" htmlFor={`todo-${id}`}>
+            <input
+              data-cy="TodoStatus"
+              id={`todo-${id}`}
+              type="checkbox"
+              className="todo__status"
+              checked={completed}
+              onChange={handleToggleStatus}
+            />
+          </label>
 
-        {/* Remove button appears only on hover */}
-        <button
-          type="button"
-          className="todo__remove"
-          data-cy="TodoDelete"
-          onClick={handleDelete}
-        >
-          ×
-        </button>
+          <span
+            data-cy="TodoTitle"
+            className="todo__title"
+            onDoubleClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            {title}
+          </span>
 
-        {/* overlay will cover the todo while it is being deleted or updated */}
-        <div
-          data-cy="TodoLoader"
-          className={`modal overlay ${(temporaryTodo || isUpdating) && 'is-active'}`}
-        >
-          <div className="modal-background has-background-white-ter" />
-          <div className="loader" />
-        </div>
-      </div>
-    </>
+          <button
+            type="button"
+            className="todo__remove"
+            data-cy="TodoDelete"
+            onClick={handleDelete}
+          >
+            ×
+          </button>
+
+          <div
+            data-cy="TodoLoader"
+            className={`modal overlay ${(temporaryTodo || isUpdating) && 'is-active'}`}
+          >
+            <div className="modal-background has-background-white-ter" />
+            <div className="loader" />
+          </div>
+        </>
+      )}
+    </div>
   );
 };
