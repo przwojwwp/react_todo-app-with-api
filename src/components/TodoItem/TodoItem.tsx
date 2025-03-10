@@ -52,7 +52,7 @@ export const TodoItem = ({
               type="checkbox"
               className="todo__status"
               checked={completed}
-              onClick={handleToggleStatus}
+              onChange={handleToggleStatus}
             />
           )}
         </label>
