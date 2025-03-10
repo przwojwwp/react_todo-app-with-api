@@ -147,10 +147,12 @@ export const App: React.FC = () => {
 
       <div className="todoapp__content">
         <Header
+          todos={todos}
           onAddTodo={handleAddTodo}
           onAddTemporaryTodo={handleAddTemporaryTodo}
           onError={handleSetError}
           inputRef={inputRef}
+          onToggleTodoStatus={handleToggleTodoStatus}
         />
         <TodoList
           temporaryTodo={temporaryTodo}

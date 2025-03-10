@@ -5,20 +5,34 @@ import { ErrorMessage } from '../../types/ErrorMessage';
 import { USER_ID } from '../../api/todos';
 
 type Props = {
+  todos: Todo[];
   onAddTodo: (newTodo: Todo) => void;
   onAddTemporaryTodo: (tempoTodo: Todo | null) => void;
   onError: (error: ErrorMessage | null) => void;
   inputRef: React.RefObject<HTMLInputElement>;
+  onToggleTodoStatus: (id: number) => void;
 };
 
 export const Header = ({
+  todos,
   onAddTodo,
   onAddTemporaryTodo,
   onError,
   inputRef,
+  onToggleTodoStatus,
 }: Props) => {
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const toggleAllTodos = () => {
+    const filteredTodos = todos.filter(todo => !todo.completed);
+
+    if (filteredTodos.length > 0) {
+      filteredTodos.forEach(todo => onToggleTodoStatus(todo.id));
+    } else {
+      todos.forEach(todo => onToggleTodoStatus(todo.id));
+    }
+  };
 
   const addNewTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,13 +96,16 @@ export const Header = ({
     addTodo();
   };
 
+  const areAllTodosCompleted = todos.every(todo => todo.completed);
+
   return (
     <header className="todoapp__header">
       {/* this button should have `active` class only if all todos are completed */}
       <button
         type="button"
-        className="todoapp__toggle-all active"
+        className={`todoapp__toggle-all ${areAllTodosCompleted ? 'active' : ''}`}
         data-cy="ToggleAllButton"
+        onClick={toggleAllTodos}
       />
 
       {/* Add a todo on form submit */}
