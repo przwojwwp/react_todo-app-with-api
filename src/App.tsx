@@ -145,12 +145,21 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleUpdateTodoTitle = (id: number, newTitle: string) => {
-    setTodos(prevTodos =>
-      prevTodos.map(todo =>
-        todo.id === id ? { ...todo, title: newTitle } : todo,
-      ),
-    );
+  const handleUpdateTodoTitle = async (id: number, newTitle: string) => {
+    try {
+      await patchTodo(id, { title: newTitle });
+      setTodos(prevTodos =>
+        prevTodos.map(todo =>
+          todo.id === id ? { ...todo, title: newTitle } : todo,
+        ),
+      );
+    } catch {
+      setErrorMessage(ErrorMessage.UPDATE_TODO);
+    } finally {
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+    }
   };
 
   return (

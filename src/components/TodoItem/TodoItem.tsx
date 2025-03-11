@@ -58,7 +58,9 @@ export const TodoItem = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!isEditing) {
+    if (!isEditing || newTitle === title) {
+      setIsEditing(false);
+
       return;
     }
 
