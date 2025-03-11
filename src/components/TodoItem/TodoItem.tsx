@@ -23,7 +23,7 @@ export const TodoItem = ({
 }: Props) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingTitle, setEditingTitle] = useState('');
+  const [newTitle, setNewTitle] = useState('');
   const renameInputRef = useRef<HTMLInputElement | null>(null);
   const checkboxRef = useRef<HTMLInputElement | null>(null);
 
@@ -62,10 +62,10 @@ export const TodoItem = ({
       return;
     }
 
-    if (editingTitle.trim() === '') {
+    if (newTitle.trim() === '') {
       handleDelete();
     } else {
-      onUpdateTodoTitle(id, editingTitle);
+      onUpdateTodoTitle(id, newTitle);
     }
 
     setIsEditing(false);
@@ -105,8 +105,8 @@ export const TodoItem = ({
               type="text"
               className="todo__title-field"
               placeholder="Empty todo will be deleted"
-              value={editingTitle}
-              onChange={e => setEditingTitle(e.target.value)}
+              value={newTitle}
+              onChange={e => setNewTitle(e.target.value)}
               onBlur={handleOnBlur}
               onKeyUp={handleEscapeUp}
             />
@@ -130,7 +130,7 @@ export const TodoItem = ({
             className="todo__title"
             onDoubleClick={() => {
               setIsEditing(true);
-              setEditingTitle(title);
+              setNewTitle(title);
             }}
           >
             {title}
