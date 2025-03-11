@@ -24,13 +24,13 @@ export const Header = ({
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const toggleAllTodos = () => {
-    const filteredTodos = todos.filter(todo => !todo.completed);
+  const toggleAllTodos = async () => {
+    try {
+      const filteredTodos = todos.filter(todo => !todo.completed);
+      const todosToToggle = filteredTodos.length > 0 ? filteredTodos : todos;
 
-    if (filteredTodos.length > 0) {
-      filteredTodos.forEach(todo => onToggleTodoStatus(todo.id));
-    } else {
-      todos.forEach(todo => onToggleTodoStatus(todo.id));
+      await Promise.all(todosToToggle.map(todo => onToggleTodoStatus(todo.id)));
+    } finally {
     }
   };
 

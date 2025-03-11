@@ -8,6 +8,7 @@ type Props = {
   onDeleteTodo: (id: number) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   onToggleTodoStatus: (id: number) => void;
+  updatingTodos: boolean;
 };
 
 export const TodoItem = ({
@@ -16,6 +17,7 @@ export const TodoItem = ({
   onDeleteTodo,
   inputRef,
   onToggleTodoStatus,
+  updatingTodos,
 }: Props) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -115,7 +117,7 @@ export const TodoItem = ({
 
           <div
             data-cy="TodoLoader"
-            className={`modal overlay ${(temporaryTodo || isUpdating) && 'is-active'}`}
+            className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
           >
             <div className="modal-background has-background-white-ter" />
             <div className="loader" />

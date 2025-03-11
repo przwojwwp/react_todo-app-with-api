@@ -17,6 +17,7 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<ErrorMessage | null>(null);
   const [filter, setFilter] = useState<Filter>(Filter.ALL);
   const [temporaryTodo, setTemporaryTodo] = useState<Todo | null>(null);
+  const [updatingTodos, setUpdatingTodos] = useState<number[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -125,6 +126,8 @@ export const App: React.FC = () => {
 
     const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
 
+    setUpdatingTodos(prev => [...prev, id]);
+
     try {
       await patchTodo(id, { completed: updatedTodo.completed });
       setTodos(prevState =>
@@ -135,6 +138,7 @@ export const App: React.FC = () => {
     } catch {
       setErrorMessage(ErrorMessage.UPDATE_TODO);
     } finally {
+      setUpdatingTodos(prev => prev.filter(todoId => todoId !== id));
       setTimeout(() => {
         setErrorMessage(null);
       }, 3000);
@@ -160,6 +164,7 @@ export const App: React.FC = () => {
           onDeleteTodo={handleDelete}
           inputRef={inputRef}
           onToggleTodoStatus={handleToggleTodoStatus}
+          updatingTodos={updatingTodos}
         />
         {todos.length > 0 && (
           <Footer
@@ -171,8 +176,6 @@ export const App: React.FC = () => {
         )}
       </div>
 
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
       <div
         data-cy="ErrorNotification"
         className={classNames(
@@ -181,16 +184,6 @@ export const App: React.FC = () => {
         )}
       >
         <button data-cy="HideErrorButton" type="button" className="delete" />
-        {/* show only one message at a time */}
-        {/* Unable to load todos
-        <br />
-        Title should not be empty
-        <br />
-        Unable to add a todo
-        <br />
-        Unable to delete a todo
-        <br />
-        Unable to update a todo */}
         {errorMessage}
       </div>
     </div>

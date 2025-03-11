@@ -9,6 +9,7 @@ type Props = {
   onDeleteTodo: (id: number) => void;
   inputRef: React.RefObject<HTMLInputElement>;
   onToggleTodoStatus: (id: number) => void;
+  updatingTodos: number[];
 };
 
 export const TodoList = ({
@@ -17,6 +18,7 @@ export const TodoList = ({
   onDeleteTodo,
   inputRef,
   onToggleTodoStatus,
+  updatingTodos,
 }: Props) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -29,6 +31,7 @@ export const TodoList = ({
               onDeleteTodo={onDeleteTodo}
               inputRef={inputRef}
               onToggleTodoStatus={onToggleTodoStatus}
+              updatingTodos={updatingTodos.includes(todo.id)}
             />
           );
         })}
@@ -40,6 +43,7 @@ export const TodoList = ({
           onDeleteTodo={onDeleteTodo}
           inputRef={inputRef}
           onToggleTodoStatus={onToggleTodoStatus}
+          updatingTodos={updatingTodos.includes(temporaryTodo.id)}
         />
       )}
     </section>
