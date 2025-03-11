@@ -147,6 +147,7 @@ export const App: React.FC = () => {
 
   const handleUpdateTodoTitle = async (id: number, newTitle: string) => {
     try {
+      setUpdatingTodos(prev => [...prev, id]);
       await patchTodo(id, { title: newTitle });
       setTodos(prevTodos =>
         prevTodos.map(todo =>
@@ -156,6 +157,7 @@ export const App: React.FC = () => {
     } catch {
       setErrorMessage(ErrorMessage.UPDATE_TODO);
     } finally {
+      setUpdatingTodos(prev => prev.filter(todoId => todoId !== id));
       setTimeout(() => {
         setErrorMessage(null);
       }, 3000);
