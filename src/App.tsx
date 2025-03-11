@@ -121,7 +121,7 @@ export const App: React.FC = () => {
     const todoToUpdate = todos.find(todo => todo.id === id);
 
     if (!todoToUpdate) {
-      return;
+      throw new Error('Todo not found');
     }
 
     const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
@@ -145,6 +145,14 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleUpdateTodoTitle = (id: number, newTitle: string) => {
+    setTodos(prevTodos =>
+      prevTodos.map(todo =>
+        todo.id === id ? { ...todo, title: newTitle } : todo,
+      ),
+    );
+  };
+
   return (
     <div className="todoapp">
       <h1 className="todoapp__title">todos</h1>
@@ -165,6 +173,7 @@ export const App: React.FC = () => {
           inputRef={inputRef}
           onToggleTodoStatus={handleToggleTodoStatus}
           updatingTodos={updatingTodos}
+          onUpdateTodoTitle={handleUpdateTodoTitle}
         />
         {todos.length > 0 && (
           <Footer

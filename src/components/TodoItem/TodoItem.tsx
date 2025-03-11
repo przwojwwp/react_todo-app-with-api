@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Todo } from '../../types/Todo';
 
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -9,6 +9,7 @@ type Props = {
   inputRef: React.RefObject<HTMLInputElement>;
   onToggleTodoStatus: (id: number) => void;
   updatingTodos: boolean;
+  onUpdateTodoTitle: (id: number, newTitle: string) => void;
 };
 
 export const TodoItem = ({
@@ -18,9 +19,13 @@ export const TodoItem = ({
   inputRef,
   onToggleTodoStatus,
   updatingTodos,
+  onUpdateTodoTitle,
 }: Props) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingTitle, setEditingTitle] = useState('');
+  const renameInputRef = useRef<HTMLInputElement | null>(null);
+  const checkboxRef = useRef<HTMLInputElement | null>(null);
 
   const handleDelete = async () => {
     setIsUpdating(true);
@@ -50,9 +55,33 @@ export const TodoItem = ({
     }
   };
 
-  const handleSubmit = () => {
-    event?.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!isEditing) {
+      return;
+    }
+
+    if (editingTitle.trim() === '') {
+      handleDelete();
+    } else {
+      onUpdateTodoTitle(id, editingTitle);
+    }
+
+    setIsEditing(false);
   };
+
+  const handleOnBlur = (event: React.FormEvent) => {
+    setTimeout(() => {
+      handleSubmit(event);
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (isEditing && renameInputRef.current) {
+      renameInputRef.current.focus();
+    }
+  }, [isEditing]);
 
   return (
     <div data-cy="Todo" className={`todo ${completed ? 'completed' : ''}`}>
@@ -60,7 +89,7 @@ export const TodoItem = ({
         <>
           <label className="todo__status-label" htmlFor={`todo=${id}`}>
             <input
-              // ref={checkboxRef}
+              ref={checkboxRef}
               data-cy="TodoStatus"
               type="checkbox"
               className="todo__status"
@@ -72,13 +101,13 @@ export const TodoItem = ({
           <form onSubmit={handleSubmit}>
             <input
               data-cy="TodoTitleField"
-              // ref={renameInputRef}
+              ref={renameInputRef}
               type="text"
               className="todo__title-field"
               placeholder="Empty todo will be deleted"
-              // value={editingTitle}
-              // onChange={e => setEditingTitle(e.target.value)}
-              // onBlur={handleOnBlur}
+              value={editingTitle}
+              onChange={e => setEditingTitle(e.target.value)}
+              onBlur={handleOnBlur}
               onKeyUp={handleEscapeUp}
             />
           </form>
@@ -101,6 +130,7 @@ export const TodoItem = ({
             className="todo__title"
             onDoubleClick={() => {
               setIsEditing(true);
+              setEditingTitle(title);
             }}
           >
             {title}

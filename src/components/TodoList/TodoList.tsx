@@ -10,6 +10,7 @@ type Props = {
   inputRef: React.RefObject<HTMLInputElement>;
   onToggleTodoStatus: (id: number) => void;
   updatingTodos: number[];
+  onUpdateTodoTitle: (id: number, newTitle: string) => void;
 };
 
 export const TodoList = ({
@@ -19,6 +20,7 @@ export const TodoList = ({
   inputRef,
   onToggleTodoStatus,
   updatingTodos,
+  onUpdateTodoTitle,
 }: Props) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -32,6 +34,7 @@ export const TodoList = ({
               inputRef={inputRef}
               onToggleTodoStatus={onToggleTodoStatus}
               updatingTodos={updatingTodos.includes(todo.id)}
+              onUpdateTodoTitle={onUpdateTodoTitle}
             />
           );
         })}
@@ -44,6 +47,7 @@ export const TodoList = ({
           inputRef={inputRef}
           onToggleTodoStatus={onToggleTodoStatus}
           updatingTodos={updatingTodos.includes(temporaryTodo.id)}
+          onUpdateTodoTitle={onUpdateTodoTitle}
         />
       )}
     </section>
