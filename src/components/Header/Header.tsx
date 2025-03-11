@@ -100,15 +100,15 @@ export const Header = ({
 
   return (
     <header className="todoapp__header">
-      {/* this button should have `active` class only if all todos are completed */}
-      <button
-        type="button"
-        className={`todoapp__toggle-all ${areAllTodosCompleted ? 'active' : ''}`}
-        data-cy="ToggleAllButton"
-        onClick={toggleAllTodos}
-      />
+      {todos.length > 0 && (
+        <button
+          type="button"
+          className={`todoapp__toggle-all ${areAllTodosCompleted ? 'active' : ''}`}
+          data-cy="ToggleAllButton"
+          onClick={toggleAllTodos}
+        />
+      )}
 
-      {/* Add a todo on form submit */}
       <form onSubmit={addNewTodo}>
         <input
           data-cy="NewTodoField"
