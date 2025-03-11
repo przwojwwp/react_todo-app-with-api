@@ -63,8 +63,9 @@ export const App: React.FC = () => {
     try {
       await deleteTodo(id);
       setTodos(prevState => prevState.filter(todo => todo.id !== id));
-    } catch {
+    } catch (error) {
       setErrorMessage(ErrorMessage.DELETE_TODO);
+      throw error;
     } finally {
       setTimeout(() => {
         setErrorMessage(null);
@@ -154,8 +155,9 @@ export const App: React.FC = () => {
           todo.id === id ? { ...todo, title: newTitle } : todo,
         ),
       );
-    } catch {
+    } catch (error) {
       setErrorMessage(ErrorMessage.UPDATE_TODO);
+      throw error;
     } finally {
       setUpdatingTodos(prev => prev.filter(todoId => todoId !== id));
       setTimeout(() => {

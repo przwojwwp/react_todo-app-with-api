@@ -55,22 +55,29 @@ export const TodoItem = ({
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!isEditing || newTitle === title) {
+    const trimmedTitle = newTitle.trim();
+
+    if (!isEditing || trimmedTitle === title) {
       setIsEditing(false);
 
       return;
     }
 
-    if (newTitle.trim() === '') {
-      handleDelete();
-    } else {
-      onUpdateTodoTitle(id, newTitle);
-    }
+    try {
+      if (trimmedTitle === '') {
+        await handleDelete();
+      } else {
+        await onUpdateTodoTitle(id, trimmedTitle);
+      }
 
-    setIsEditing(false);
+      setIsEditing(false);
+    } catch {
+      setIsEditing(true);
+      renameInputRef.current?.focus();
+    }
   };
 
   const handleOnBlur = (event: React.FormEvent) => {
