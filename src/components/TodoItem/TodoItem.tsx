@@ -66,6 +66,8 @@ export const TodoItem = ({
       return;
     }
 
+    setIsUpdating(true);
+
     try {
       if (trimmedTitle === '') {
         await handleDelete();
@@ -77,6 +79,8 @@ export const TodoItem = ({
     } catch {
       setIsEditing(true);
       renameInputRef.current?.focus();
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -120,6 +124,13 @@ export const TodoItem = ({
               onKeyUp={handleEscapeUp}
             />
           </form>
+          <div
+            data-cy="TodoLoader"
+            className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
+          >
+            <div className="modal-background has-background-white-ter" />
+            <div className="loader" />
+          </div>
         </>
       ) : (
         <>
