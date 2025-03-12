@@ -70,7 +70,7 @@ export const TodoItem = ({
 
     try {
       if (trimmedTitle === '') {
-        await handleDelete();
+        await onDeleteTodo(id);
       } else {
         await onUpdateTodoTitle(id, trimmedTitle);
       }
