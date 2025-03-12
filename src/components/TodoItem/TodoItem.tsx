@@ -124,13 +124,6 @@ export const TodoItem = ({
               onKeyUp={handleEscapeUp}
             />
           </form>
-          <div
-            data-cy="TodoLoader"
-            className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
-          >
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
         </>
       ) : (
         <>
@@ -164,16 +157,15 @@ export const TodoItem = ({
           >
             ×
           </button>
-
-          <div
-            data-cy="TodoLoader"
-            className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
-          >
-            <div className="modal-background has-background-white-ter" />
-            <div className="loader" />
-          </div>
         </>
       )}
+      <div
+        data-cy="TodoLoader"
+        className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
+      >
+        <div className="modal-background has-background-white-ter" />
+        <div className="loader" />
+      </div>
     </div>
   );
 };
