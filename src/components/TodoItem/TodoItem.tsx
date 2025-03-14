@@ -162,7 +162,7 @@ export const TodoItem = ({
         data-cy="TodoLoader"
         className={classNames('modal overlay', {
           'is-active':
-            temporaryTodo || todoStatus === 'editing' || updatingTodos,
+            temporaryTodo || todoStatus === 'updating' || updatingTodos,
         })}
       >
         <div className="modal-background has-background-white-ter" />
