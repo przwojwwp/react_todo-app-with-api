@@ -160,7 +160,6 @@ export const TodoItem = ({
       )}
       <div
         data-cy="TodoLoader"
-        // className={`modal overlay ${(temporaryTodo || todoStatus === 'updating' || updatingTodos) && 'is-active'}`}
         className={classNames('modal overlay', {
           'is-active':
             temporaryTodo || todoStatus === 'editing' || updatingTodos,
