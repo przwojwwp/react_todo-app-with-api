@@ -25,13 +25,10 @@ export const Header = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleAllTodos = async () => {
-    try {
-      const filteredTodos = todos.filter(todo => !todo.completed);
-      const todosToToggle = filteredTodos.length > 0 ? filteredTodos : todos;
+    const filteredTodos = todos.filter(todo => !todo.completed);
+    const todosToToggle = filteredTodos.length > 0 ? filteredTodos : todos;
 
-      await Promise.all(todosToToggle.map(todo => onToggleTodoStatus(todo.id)));
-    } finally {
-    }
+    await Promise.all(todosToToggle.map(todo => onToggleTodoStatus(todo.id)));
   };
 
   const addNewTodo = (event: React.FormEvent<HTMLFormElement>) => {
