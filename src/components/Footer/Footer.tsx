@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { Filter } from '../../types/Filter';
 import { Todo } from '../../types/Todo';
 
@@ -40,19 +41,18 @@ export const Footer = ({
 
   return (
     <footer className="todoapp__footer" data-cy="Footer">
-      {/* Hide the footer if there are no todos */}
-
       <span className="todo-count" data-cy="TodosCounter">
         {activeTodos} items left
       </span>
 
-      {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
         {filterOptions.map(({ label, value, href, dataCy }) => (
           <a
             key={value}
             href={href}
-            className={`filter__link ${filter === value ? 'selected' : ''}`}
+            className={classNames('filter__link', {
+              selected: filter === value,
+            })}
             data-cy={dataCy}
             onClick={() => onFilterChange(value)}
           >
@@ -61,7 +61,6 @@ export const Footer = ({
         ))}
       </nav>
 
-      {/* this button should be disabled if there are no completed todos */}
       <button
         type="button"
         className="todoapp__clear-completed"

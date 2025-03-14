@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { postTodo } from '../../api/todos';
 import { Todo } from '../../types/Todo';
 import { ErrorMessage } from '../../types/ErrorMessage';
 import { USER_ID } from '../../api/todos';
+import classNames from 'classnames';
 
 type Props = {
   todos: Todo[];
@@ -68,7 +69,7 @@ export const Header = ({
       } catch (error) {
         if (
           error instanceof Error &&
-          error.message === 'Title should not be empty'
+          error.message === ErrorMessage.EMPTY_TITLE
         ) {
           onError(ErrorMessage.EMPTY_TITLE);
         } else {
@@ -93,14 +94,18 @@ export const Header = ({
     addTodo();
   };
 
-  const areAllTodosCompleted = todos.every(todo => todo.completed);
+  const areAllTodosCompleted: boolean = useMemo(() => {
+    return todos.every(todo => todo.completed);
+  }, [todos]);
 
   return (
     <header className="todoapp__header">
       {todos.length > 0 && (
         <button
           type="button"
-          className={`todoapp__toggle-all ${areAllTodosCompleted ? 'active' : ''}`}
+          className={classNames('todoapp__toggle-all', {
+            active: areAllTodosCompleted,
+          })}
           data-cy="ToggleAllButton"
           onClick={toggleAllTodos}
         />
