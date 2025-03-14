@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Todo } from '../../types/Todo';
+import { TodoStatus } from '../../types/TodoStatus';
+import classNames from 'classnames';
 
 /* eslint-disable jsx-a11y/label-has-associated-control */
 type Props = {
@@ -21,37 +23,36 @@ export const TodoItem = ({
   updatingTodos,
   onUpdateTodoTitle,
 }: Props) => {
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [todoStatus, setTodoStatus] = useState<TodoStatus>('idle');
   const [newTitle, setNewTitle] = useState('');
   const renameInputRef = useRef<HTMLInputElement | null>(null);
   const checkboxRef = useRef<HTMLInputElement | null>(null);
 
   const handleDelete = async () => {
-    setIsUpdating(true);
+    setTodoStatus('updating');
 
     try {
       await onDeleteTodo(id);
     } finally {
-      setIsUpdating(false);
+      setTodoStatus('idle');
       inputRef.current?.focus();
     }
   };
 
   const handleToggleStatus = async () => {
-    setIsUpdating(true);
+    setTodoStatus('updating');
 
     try {
       await onToggleTodoStatus(id);
     } finally {
-      setIsUpdating(false);
+      setTodoStatus('idle');
       inputRef.current?.focus();
     }
   };
 
   const handleEscapeUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape') {
-      setIsEditing(false);
+      setTodoStatus('idle');
     }
   };
 
@@ -60,13 +61,13 @@ export const TodoItem = ({
 
     const trimmedTitle = newTitle.trim();
 
-    if (!isEditing || trimmedTitle === title) {
-      setIsEditing(false);
+    if (todoStatus !== 'editing' || trimmedTitle === title) {
+      setTodoStatus('idle');
 
       return;
     }
 
-    setIsUpdating(true);
+    setTodoStatus('updating');
 
     try {
       if (trimmedTitle === '') {
@@ -75,12 +76,10 @@ export const TodoItem = ({
         await onUpdateTodoTitle(id, trimmedTitle);
       }
 
-      setIsEditing(false);
+      setTodoStatus('idle');
     } catch {
-      setIsEditing(true);
+      setTodoStatus('editing');
       renameInputRef.current?.focus();
-    } finally {
-      setIsUpdating(false);
     }
   };
 
@@ -91,14 +90,14 @@ export const TodoItem = ({
   };
 
   useEffect(() => {
-    if (isEditing && renameInputRef.current) {
+    if (todoStatus === 'editing' && renameInputRef.current) {
       renameInputRef.current.focus();
     }
-  }, [isEditing]);
+  }, [todoStatus]);
 
   return (
     <div data-cy="Todo" className={`todo ${completed ? 'completed' : ''}`}>
-      {isEditing ? (
+      {todoStatus === 'editing' ? (
         <>
           <label className="todo__status-label" htmlFor={`todo=${id}`}>
             <input
@@ -142,7 +141,7 @@ export const TodoItem = ({
             data-cy="TodoTitle"
             className="todo__title"
             onDoubleClick={() => {
-              setIsEditing(true);
+              setTodoStatus('editing');
               setNewTitle(title);
             }}
           >
@@ -161,7 +160,11 @@ export const TodoItem = ({
       )}
       <div
         data-cy="TodoLoader"
-        className={`modal overlay ${(temporaryTodo || isUpdating || updatingTodos) && 'is-active'}`}
+        // className={`modal overlay ${(temporaryTodo || todoStatus === 'updating' || updatingTodos) && 'is-active'}`}
+        className={classNames('modal overlay', {
+          'is-active':
+            temporaryTodo || todoStatus === 'editing' || updatingTodos,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
